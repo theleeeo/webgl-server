@@ -1,4 +1,5 @@
 #![warn(clippy::pedantic)]
+use actix_cors::Cors;
 use actix_files as fs;
 use actix_service::Service;
 use actix_web::http::header::{HeaderValue, CONTENT_ENCODING, CONTENT_TYPE};
@@ -21,7 +22,10 @@ async fn list_games() -> Result<HttpResponse> {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
+        let cors = Cors::default().allow_any_method().allow_any_origin();
+
         App::new()
+            .wrap(cors)
             .wrap_fn(|req, srv| {
                 let req_path = req.path().to_string();
                 let fut = srv.call(req);
