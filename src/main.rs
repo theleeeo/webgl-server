@@ -43,7 +43,11 @@ async fn main() -> std::io::Result<()> {
                 }
             })
             .service(list_games)
-            .service(fs::Files::new("/", "./games"))
+            .service(
+                fs::Files::new("/", "./games")
+                    .redirect_to_slash_directory()
+                    .index_file("index.html"),
+            )
     })
     .bind(("127.0.0.1", 8080))?
     .run()
