@@ -4,6 +4,7 @@ use actix_files as fs;
 use actix_service::Service;
 use actix_web::http::header::{HeaderValue, CONTENT_ENCODING, CONTENT_TYPE};
 use actix_web::{get, App, HttpResponse, HttpServer, Result};
+use std::env;
 
 // Get a list of all games currently available
 #[get("/")]
@@ -21,6 +22,11 @@ async fn list_games() -> Result<HttpResponse> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    let port: u16 = env::var("PORT")
+        .unwrap_or_else(|_| String::from("8080"))
+        .parse()
+        .unwrap_or(8080);
+
     HttpServer::new(|| {
         let cors = Cors::default().allow_any_method().allow_any_origin();
 
@@ -53,7 +59,7 @@ async fn main() -> std::io::Result<()> {
                     .index_file("index.html"),
             )
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("127.0.0.1", port))?
     .run()
     .await
 }
