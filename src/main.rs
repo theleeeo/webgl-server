@@ -27,6 +27,8 @@ async fn main() -> std::io::Result<()> {
         .parse()
         .unwrap_or(8080);
 
+    let host: String = env::var("HOST").unwrap_or_else(|_| String::from("localhost"));
+
     HttpServer::new(|| {
         let cors = Cors::default().allow_any_method().allow_any_origin();
 
@@ -59,7 +61,7 @@ async fn main() -> std::io::Result<()> {
                     .index_file("index.html"),
             )
     })
-    .bind(("127.0.0.1", port))?
+    .bind((host, port))?
     .run()
     .await
 }
